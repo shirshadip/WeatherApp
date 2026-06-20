@@ -1,13 +1,18 @@
 import streamlit as st
 import requests
-import tomllib
+# import tomllib
 # import weatherreport
 import pandas as pd 
 
-with open("secrets.toml", "rb") as file:
-    weather_data = tomllib.load(file)
+import streamlit as st
 
-API_KEY = weather_data["api_key"]
+# Access the API key directly
+API_KEY = st.secrets["api_key"]
+
+# Or if your TOML has nested sections (e.g., [weather])
+# API_KEY = st.secrets["weather"]["api_key"]
+
+st.write("API Key loaded successfully")   
 
 city = st.text_input("Enter a city name")
 
