@@ -1,39 +1,74 @@
 import streamlit as st
 import requests
-# import tomllib
-# import weatherreport
-import pandas as pd 
+import pandas as pd
 
-import streamlit as st
+st.set_page_config(
+    page_title="AI Weather App",
+    page_icon="🌦️",
+    layout="centered"
+)
 
-# Access the API key directly
 API_KEY = st.secrets["api_key"]
 
-# Or if your TOML has nested sections (e.g., [weather])
-# API_KEY = st.secrets["weather"]["api_key"]
+tab1, tab2 = st.tabs([
+    "🌤 Current Weather",
+    "📄 JSON Data"
+])
 
-st.write("API Key loaded successfully")   
+with tab1:
 
-city = st.text_input("Enter a city name")
+    city = st.text_input("Enter City")
 
-if city:
-    url = f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={API_KEY}&units=metric"
+    if city:
 
-    response = requests.get(url)
-    data = response.json()
+        url = f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={API_KEY}&units=metric"
 
-    st.json(data)
+        response = requests.get(url)
 
-    temp = data["main"]["temp"]
-    humidity = data["main"]["humidity"]
-    feels_like = data["main"]["feels_like"]
-    latitude= data["coord"]["lat"]
-    longitude=data["coord"]["lon"]
+        if response.status_code == 200:
 
-    st.write("Temperature:", temp, "°C")
-    st.write("Humidity:", humidity, "%")
-    st.write("Feels Like:", feels_like, "°C")
-    df = pd.read_csv("weather_last_30_days.csv")
-    st.write(df)
-    
-    
+            data = response.json()
+
+            col1, col2, col3 = st.columns(3)
+
+            col1.metric(
+                "🌡 Temperature",
+                f"{data['main']['temp']} °C"
+            )
+
+            col2.metric(
+                "💧 Humidity",
+                f"{data['main']['humidity']} %"
+            )
+
+            col3.metric(
+                "🥵 Feels Like",
+                f"{data['main']['feels_like']} °C"
+            )
+
+            st.write("Latitude:", data["coord"]["lat"])
+            st.write("Longitude:", data["coord"]["lon"])
+
+            df = pd.read_csv("weather_last_30_days.csv")
+
+            st.subheader("Historical Weather Data")
+
+            st.dataframe(df, use_container_width=True)
+
+        else:
+            st.error("City not found.")
+
+with tab2:
+
+    city = st.text_input("Enter City", key="json_city")
+
+    if city:
+
+        url = f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={API_KEY}&units=metric"
+
+        response = requests.get(url)
+
+        if response.status_code == 200:
+            st.json(response.json())
+        else:
+            st.error("City not found.")
