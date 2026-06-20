@@ -1,7 +1,7 @@
 import streamlit as st
 import requests
 import tomllib
-import weatherreport
+# import weatherreport
 import pandas as pd 
 
 with open("secrets.toml", "rb") as file:
