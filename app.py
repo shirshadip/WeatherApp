@@ -4,7 +4,7 @@ import tomllib
 import weatherreport
 import pandas as pd 
 
-with open("KEYS.toml", "rb") as file:
+with open("secrets.toml", "rb") as file:
     weather_data = tomllib.load(file)
 
 API_KEY = weather_data["api_key"]
