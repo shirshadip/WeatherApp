@@ -1,6 +1,7 @@
 import streamlit as st
 import requests
 import pandas as pd
+import weatherreport
 
 st.set_page_config(
     page_title="AI Weather App",
@@ -28,7 +29,9 @@ with tab1:
         if response.status_code == 200:
 
             data = response.json()
-
+            
+            
+            
             col1, col2, col3 = st.columns(3)
 
             col1.metric(
@@ -45,15 +48,20 @@ with tab1:
                 "🥵 Feels Like",
                 f"{data['main']['feels_like']} °C"
             )
-
+            latitude =data["coord"]["lat"]
+            longitude = data["coord"]["lon"]
             st.write("Latitude:", data["coord"]["lat"])
             st.write("Longitude:", data["coord"]["lon"])
+            
+            weatherreport.generate_30_day_report()
 
             df = pd.read_csv("weather_last_30_days.csv")
 
             st.subheader("Historical Weather Data")
 
             st.dataframe(df, use_container_width=True)
+            
+            
 
         else:
             st.error("City not found.")

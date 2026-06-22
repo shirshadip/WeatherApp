@@ -1,13 +1,11 @@
 import requests
 import pandas as pd
 from datetime import datetime, timedelta
-import app
+import argparse
 
 
-def Generate_30_day_report():
-# Kolkata coordinates
-    latitude = app.latitude
-    longitude = app.longitude
+def generate_30_day_report(latitude=22.5726, longitude=88.3639):
+    """Download last 30 days of daily weather for given coords and save CSV."""
 
     # Last 30 days
     end_date = datetime.today().date()
@@ -41,10 +39,15 @@ def Generate_30_day_report():
         "rain_mm": data["daily"]["precipitation_sum"]
     })
 
-    df.to_csv("weather_last_30_days.csv", index=False)
+    df.to_csv("weather_last_30_days.csv",mode="w", index=False)
 
     print("CSV saved successfully!")
     print(df.head())
 
-if __name__=="main":
-    Generate_30_day_report()
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Generate 30-day weather report CSV for coords")
+    parser.add_argument("--lat", type=float, default=22.5726, help="Latitude (default: Kolkata)")
+    parser.add_argument("--lon", type=float, default=88.3639, help="Longitude (default: Kolkata)")
+    args = parser.parse_args()
+    generate_30_day_report(args.lat, args.lon)
