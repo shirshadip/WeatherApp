@@ -2,9 +2,10 @@ import requests
 import pandas as pd
 from datetime import datetime, timedelta
 import argparse
+import app
 
 
-def generate_30_day_report(latitude=22.5726, longitude=88.3639):
+def generate_30_day_report(lat,long):
     """Download last 30 days of daily weather for given coords and save CSV."""
 
     # Last 30 days
@@ -13,8 +14,8 @@ def generate_30_day_report(latitude=22.5726, longitude=88.3639):
 
     url = (
         f"https://archive-api.open-meteo.com/v1/archive?"
-        f"latitude={latitude}"
-        f"&longitude={longitude}"
+        f"latitude={lat}"
+        f"&longitude={long}"
         f"&start_date={start_date}"
         f"&end_date={end_date}"
         f"&daily=temperature_2m_max,temperature_2m_min,"
@@ -25,8 +26,10 @@ def generate_30_day_report(latitude=22.5726, longitude=88.3639):
     response = requests.get(url)
     try:
         response.raise_for_status()
-    except requests.HTTPError as e:
-        print(f"Request failed: {e}")
+    except requests.HTTPError:
+        print("Status Code:", response.status_code)
+        print("Response:")
+        print(response.text)
         return
     data = response.json()
     if "daily" not in data:
@@ -39,7 +42,7 @@ def generate_30_day_report(latitude=22.5726, longitude=88.3639):
         "rain_mm": data["daily"]["precipitation_sum"]
     })
 
-    df.to_csv("weather_last_30_days.csv",mode="w", index=False)
+    df.to_csv("weather_last_30_days.csv", index=False)
 
     print("CSV saved successfully!")
     print(df.head())

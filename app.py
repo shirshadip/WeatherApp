@@ -53,7 +53,7 @@ with tab1:
             st.write("Latitude:", data["coord"]["lat"])
             st.write("Longitude:", data["coord"]["lon"])
             
-            weatherreport.generate_30_day_report()
+            weatherreport.generate_30_day_report(latitude,longitude)
 
             df = pd.read_csv("weather_last_30_days.csv")
 
