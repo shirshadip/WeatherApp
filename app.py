@@ -19,6 +19,7 @@ API_KEY = st.secrets["api_key"]
 city = st.text_input(
     "Enter location",
     placeholder="e.g. Kolkata",
+    key="city_input"
     
 ).strip()
 
