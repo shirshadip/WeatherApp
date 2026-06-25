@@ -2,7 +2,6 @@ import requests
 import pandas as pd
 from datetime import datetime, timedelta
 import argparse
-import app
 
 
 def generate_30_day_report(lat,long):
